@@ -3,21 +3,10 @@ import newsSources from "../sources/news";
 import techSources from "../sources/tech";
 import youtubeSources from "../sources/youtube";
 import podcastSources from "../sources/podcast";
-import { useState, useEffect } from "react";
-import useKeyboardNavigation from "../hooks/useKeyboardNav";
-import { sortItemsByDate } from "../utils";
+import { useState } from "react";
 
-export default function Sources({
-  setSelectedSourceName,
-  setServerData,
-  setSelectedSourceFeed,
-  articleIndex,
-  setArticleIndex,
-  setShowModal,
-  setSelectedArticle,
-  selectedSourceFeed,
-  showModal,
-}) {
+export default function Sources({ setSelectedSource }) {
+  
   const sources = [
     { title: "News", data: newsSources },
     { title: "Tech", data: techSources },
@@ -27,64 +16,10 @@ export default function Sources({
   ];
 
   const sourceData = sources.map((source) => source.data);
-  const [sourceCategoryIndex, setSourceCategoryIndex] = useState(0);
-  const [sourceIndex, setSourceIndex] = useState(-1);
-  const [feedURL, setFeedURL] = useState(null);
-
-  //manage keyboard nav & auto scroll
-  const itemRefs = useKeyboardNavigation({
-    sourceData,
-    sourceCategoryIndex,
-    setSourceCategoryIndex,
-    sourceIndex,
-    setSourceIndex,
-    setSelectedSourceName,
-    setFeedURL,
-    feedURL,
-    setSelectedSourceFeed,
-    articleIndex,
-    setArticleIndex,
-    setShowModal,
-    showModal,
-    setSelectedArticle,
-    selectedSourceFeed,
-    initialRefs: sources.map(() => new Map()),
+  const [tempSourceIndex, setTempSourceIndex] = useState({
+    sourceCategoryIndex: 0,
+    sourceIndex: -1,
   });
-
-  // Fetch the XML data from the server
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `/api/getXML?feedUrl=${encodeURIComponent(feedURL)}`
-      );
-      if (!response.ok) {
-        console.error("Failed to fetch XML data");
-        setServerData(null);
-        return;
-      }
-      const data = await response.json();
-      // If the feed is an Atom feed
-      if (data.feed) {
-        data.feed.entry.sort(sortItemsByDate);
-        setServerData({ feed: { entry: data.feed.entry } });
-        // If the feed is an RSS feed
-      } else if (data.rss) {
-        if (Array.isArray(data.rss.channel.item)) {
-          data.rss.channel.item.sort(sortItemsByDate);
-        }
-        setServerData({ rss: { channel: { item: data.rss.channel.item } } });
-        // If the feed is an RDF feed
-      } else if (data["rdf:RDF"]) {
-        const items = data["rdf:RDF"].item;
-        if (Array.isArray(items)) {
-          items.sort(sortItemsByDate);
-        }
-        setServerData({ rdf: { item: items } });
-      }
-    };
-    // Fetch the data when the feedURL changes
-    fetchData();
-  }, [feedURL]);
 
   return (
     <aside>
@@ -105,27 +40,24 @@ export default function Sources({
             </p>
             <ul className="h-40 pl-1 overflow-auto">
               {category.map((item, itemIndex) => (
-                <div
-                  ref={(el) => {
-                    if (el) {
-                      itemRefs.current[categoryIndex].set(itemIndex, el);
-                    }
-                  }}
-                  key={itemIndex}
-                >
+                <div key={itemIndex}>
                   <p
                     className={
-                      // articleIndex === null &&
-                      itemIndex === sourceIndex &&
-                      categoryIndex === sourceCategoryIndex
+                      itemIndex === tempSourceIndex.sourceIndex &&
+                      categoryIndex === tempSourceIndex.sourceCategoryIndex
                         ? "bg-blue-600"
                         : "bg-background hover:bg-blue-600"
                     }
                     onClick={() => {
-                      setSourceIndex(itemIndex);
-                      setSourceCategoryIndex(categoryIndex);
-                      setSelectedSourceName(item.title);
-                      setFeedURL(item.url);
+                      setTempSourceIndex({
+                        sourceCategoryIndex: categoryIndex,
+                        sourceIndex: itemIndex,
+                      });
+                      setSelectedSource((prevState) => ({
+                        ...prevState,
+                        name: item.title,
+                        url: item.url,
+                      }));
                     }}
                   >
                     {item.title}

@@ -1,25 +1,45 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDate } from "../utils";
 
 export default function Feed({
-  serverData,
-  setArticleIndex,
-  articleIndex,
-  setSelectedArticle,
-  setShowModal,
+  fetchedFeed,
   selectedSourceFeed,
-  setSelectedSourceFeed,
+  selectedArticleIndex,
+  setShowModal,
+  setSelectedSource,
+  setSelectedArticle,
 }) {
-  // const [selectedSourceFeed, setSelectedSourceFeed] = useState([]);
   let counter = 1;
 
-  console.log(selectedSourceFeed, "selectedSourceFeed");
+  //use for moving up / down before opening modal
+  const [tempArticleIndex, setTempArticleIndex] = useState(null);
+
+  const setSelectedSourceFeed = (feed) => {
+    setSelectedSource((prevState) => ({
+      ...prevState,
+      feed: feed,
+    }));
+  };
+
+  const setSelectedArticleIndex = (index) => {
+    setSelectedArticle((prevState) => ({
+      ...prevState,
+      index: index,
+    }));
+  };
+
+  const setSelectedArticleContent = (content) => {
+    setSelectedArticle((prevState) => ({
+      ...prevState,
+      content: content,
+    }));
+  };
 
   useEffect(() => {
     const serverDataItemType = {
-      atom: serverData?.feed?.entry,
-      rss: serverData?.rss?.channel?.item,
-      rdf: serverData?.rdf?.item,
+      atom: fetchedFeed?.feed?.entry,
+      rss: fetchedFeed?.rss?.channel?.item,
+      rdf: fetchedFeed?.rdf?.item,
     };
     if (serverDataItemType.atom && serverDataItemType.atom.length > 0) {
       setSelectedSourceFeed(serverDataItemType.atom);
@@ -28,36 +48,32 @@ export default function Feed({
     } else if (serverDataItemType.rdf && serverDataItemType.rdf.length > 0) {
       setSelectedSourceFeed(serverDataItemType.rdf);
     }
-    setArticleIndex(null);
-  }, [serverData]);
-
-  //add keyboard nav to feed & modal
-  //add auto scroll to feed & modal
+    setSelectedArticleIndex(null);
+  }, [fetchedFeed]);
 
   return (
     <>
       <div className="h-screen flex-grow text-gray-200 px-1 overflow-auto scrollbar mb-6">
         {selectedSourceFeed.map((item, index) => (
-          <p
-            key="index"
-            className={articleIndex === index ? "bg-blue-600" : "bg-background"}
+          <div
+            key={index}
+            className={
+              selectedArticleIndex === index ? "bg-blue-600" : "bg-background"
+            }
             onClick={() => {
-              setArticleIndex(index);
-              setSelectedArticle(item);
+              setSelectedArticleIndex(index);
+              setSelectedArticleContent(item);
               setShowModal(true);
             }}
           >
-            <div
-              key={index}
-              className="flex flex-row overflow-hidden h-6 cursor-pointer hover:bg-blue-600"
-            >
+            <div className="flex flex-row overflow-hidden h-6 cursor-pointer hover:bg-blue-600">
               <div className="pr-2 w-8"> {counter++}.</div>
               <div className="pr-4 w-52 min-w-fit overflow-hidden hidden md:block">
                 {formatDate(item)}
               </div>
               <div className="overflow-auto ">{item.title}</div>
             </div>
-          </p>
+          </div>
         ))}
       </div>
     </>

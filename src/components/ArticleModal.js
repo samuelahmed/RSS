@@ -1,14 +1,19 @@
 import ReactPlayer from "react-player";
 import Link from "next/link";
 import DOMPurify from "dompurify";
-import { createImageLoaderSet, checkIfContainsImage, formatDate, timeAgo } from "../utils";
+import {
+  createImageLoaderSet,
+  checkIfContainsImage,
+  formatDate,
+  timeAgo,
+} from "../utils";
 
 export default function DisplayModal({
   showModal,
   setShowModal,
   selectedArticle,
 }) {
-
+  
   const imgLoaderSet = createImageLoaderSet(selectedArticle);
   const containsImage = checkIfContainsImage(
     selectedArticle?.["content:encoded"] || "",
@@ -46,7 +51,7 @@ export default function DisplayModal({
                 <p>
                   {formatDate(selectedArticle)} - {timeAgo(selectedArticle)}
                 </p>
-              
+
                 <p className="text-center">
                   {selectedArticle &&
                   selectedArticle.title &&
@@ -192,5 +197,3 @@ export default function DisplayModal({
     </>
   );
 }
-
-
