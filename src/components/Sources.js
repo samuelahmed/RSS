@@ -4,8 +4,9 @@ import techSources from "../sources/tech";
 import youtubeSources from "../sources/youtube";
 import podcastSources from "../sources/podcast";
 import { useState } from "react";
+import useSourceKeyboardNav from "@/hooks/useSourceKeyboardNav";
 
-export default function Sources({ setSelectedSource }) {
+export default function Sources({ setSelectedSource, selectedSourceURL }) {
   
   const sources = [
     { title: "News", data: newsSources },
@@ -16,10 +17,24 @@ export default function Sources({ setSelectedSource }) {
   ];
 
   const sourceData = sources.map((source) => source.data);
-  const [tempSourceIndex, setTempSourceIndex] = useState({
-    sourceCategoryIndex: 0,
-    sourceIndex: -1,
+  const [tempSourceIndex, setTempSourceIndex] = useState(0);
+  const [tempCategoryIndex, setTempCategoryIndex] = useState(0);
+
+
+  const itemRefs = useSourceKeyboardNav({
+    selectedSourceURL,
+    initialRefs: sources.map(() => new Map()),
+    // tempSourceIndex,
+    sourceData,
+
+    setTempSourceIndex,
+    setTempCategoryIndex,
+
+
+    tempCategoryIndex,
   });
+
+
 
   return (
     <aside>
@@ -40,19 +55,25 @@ export default function Sources({ setSelectedSource }) {
             </p>
             <ul className="h-40 pl-1 overflow-auto">
               {category.map((item, itemIndex) => (
-                <div key={itemIndex}>
+                <div 
+              //   ref={(el) => {
+              //     if (el) {
+              //       itemRefs.current[categoryIndex].set(itemIndex, el);
+              //     }
+              //   }
+              // } 
+                
+                key={itemIndex}>
                   <p
                     className={
-                      itemIndex === tempSourceIndex.sourceIndex &&
-                      categoryIndex === tempSourceIndex.sourceCategoryIndex
+                      itemIndex === tempSourceIndex &&
+                      categoryIndex === tempCategoryIndex
                         ? "bg-blue-600"
                         : "bg-background hover:bg-blue-600"
                     }
                     onClick={() => {
-                      setTempSourceIndex({
-                        sourceCategoryIndex: categoryIndex,
-                        sourceIndex: itemIndex,
-                      });
+                      setTempSourceIndex(itemIndex)
+                      setTempCategoryIndex(categoryIndex)
                       setSelectedSource((prevState) => ({
                         ...prevState,
                         name: item.title,
