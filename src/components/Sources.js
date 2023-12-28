@@ -20,21 +20,16 @@ export default function Sources({ setSelectedSource, selectedSourceURL }) {
   const [tempSourceIndex, setTempSourceIndex] = useState(0);
   const [tempCategoryIndex, setTempCategoryIndex] = useState(0);
 
-
   const itemRefs = useSourceKeyboardNav({
     selectedSourceURL,
     initialRefs: sources.map(() => new Map()),
-    // tempSourceIndex,
     sourceData,
-
     setTempSourceIndex,
     setTempCategoryIndex,
-
-
+    tempSourceIndex,
     tempCategoryIndex,
+    setSelectedSource,
   });
-
-
 
   return (
     <aside>
@@ -55,15 +50,14 @@ export default function Sources({ setSelectedSource, selectedSourceURL }) {
             </p>
             <ul className="h-40 pl-1 overflow-auto">
               {category.map((item, itemIndex) => (
-                <div 
-              //   ref={(el) => {
-              //     if (el) {
-              //       itemRefs.current[categoryIndex].set(itemIndex, el);
-              //     }
-              //   }
-              // } 
-                
-                key={itemIndex}>
+                <div
+                  ref={(el) => {
+                    if (el) {
+                      itemRefs.current[categoryIndex].set(itemIndex, el);
+                    }
+                  }}
+                  key={itemIndex}
+                >
                   <p
                     className={
                       itemIndex === tempSourceIndex &&
@@ -72,8 +66,8 @@ export default function Sources({ setSelectedSource, selectedSourceURL }) {
                         : "bg-background hover:bg-blue-600"
                     }
                     onClick={() => {
-                      setTempSourceIndex(itemIndex)
-                      setTempCategoryIndex(categoryIndex)
+                      setTempSourceIndex(itemIndex);
+                      setTempCategoryIndex(categoryIndex);
                       setSelectedSource((prevState) => ({
                         ...prevState,
                         name: item.title,
