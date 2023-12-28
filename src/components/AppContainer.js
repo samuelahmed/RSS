@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Sources from "./Sources";
 import Header from "./Header";
 import Footer from "./Footer";
 import Feed from "./Feed";
 import ArticleModal from "./ArticleModal";
 import { sortItemsByDate } from "../utils";
+import useFetchFeed from "@/hooks/useFetchFeed";
 
 export default function AppContainer() {
-  
+
   const [fetchedFeed, setFetchedFeed] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedSource, setSelectedSource] = useState({
@@ -22,39 +23,8 @@ export default function AppContainer() {
     content: {},
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `/api/getXML?feedUrl=${encodeURIComponent(selectedSource.url)}`
-      );
-      if (!response.ok) {
-        console.error("Failed to fetch XML data");
-        setFetchedFeed(null);
-        return;
-      }
-      const data = await response.json();
-      // If the feed is an Atom feed
-      if (data.feed) {
-        data.feed.entry.sort(sortItemsByDate);
-        setFetchedFeed({ feed: { entry: data.feed.entry } });
-        // If the feed is an RSS feed
-      } else if (data.rss) {
-        if (Array.isArray(data.rss.channel.item)) {
-          data.rss.channel.item.sort(sortItemsByDate);
-        }
-        setFetchedFeed({ rss: { channel: { item: data.rss.channel.item } } });
-        // If the feed is an RDF feed
-      } else if (data["rdf:RDF"]) {
-        const items = data["rdf:RDF"].item;
-        if (Array.isArray(items)) {
-          items.sort(sortItemsByDate);
-        }
-        setFetchedFeed({ rdf: { item: items } });
-      }
-    };
-    // Fetch the data when the feedURL changes
-    fetchData();
-  }, [selectedSource.url]);
+  useFetchFeed({ selectedSource, setFetchedFeed });
+  
 
   return (
     <div>
