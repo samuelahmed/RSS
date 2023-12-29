@@ -7,7 +7,6 @@ import { useState } from "react";
 import useSourceKeyboardNav from "@/hooks/useSourceKeyboardNav";
 
 export default function Sources({ setSelectedSource, selectedSourceURL }) {
-  
   const sources = [
     { title: "News", data: newsSources },
     { title: "Tech", data: techSources },

@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "../utils";
+import useFeedKeyboardNav from "@/hooks/useFeedKeyboardNav";
 
 export default function Feed({
   fetchedFeed,
+  showModal,
   selectedSourceFeed,
-  selectedArticleIndex,
   setShowModal,
   setSelectedSource,
   setSelectedArticle,
+  selectedSourceURL,
 }) {
   let counter = 1;
+  const [tempArticleIndex, setTempArticleIndex] = useState(0);
 
-  //use for moving up / down before opening modal
-  const [tempArticleIndex, setTempArticleIndex] = useState(null);
+  const itemRefs = useFeedKeyboardNav({
+    initialRefs: selectedSourceFeed.map(() => new Map()),
+    showModal,
+    selectedSourceURL,
+    tempArticleIndex,
+    selectedSourceFeed,
+    setShowModal,
+    setTempArticleIndex,
+    setSelectedArticle,
+    setSelectedSource,
+  });
 
   const setSelectedSourceFeed = (feed) => {
     setSelectedSource((prevState) => ({
@@ -57,10 +69,16 @@ export default function Feed({
         {selectedSourceFeed.map((item, index) => (
           <div
             key={index}
+            // ref={(el) => {
+            //   if (el) {
+            //     itemRefs.current[index].set(index, el);
+            //   }
+            // }}
             className={
-              selectedArticleIndex === index ? "bg-blue-600" : "bg-background"
+              tempArticleIndex === index ? "bg-blue-600" : "bg-background"
             }
             onClick={() => {
+              setTempArticleIndex(index);
               setSelectedArticleIndex(index);
               setSelectedArticleContent(item);
               setShowModal(true);
