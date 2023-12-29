@@ -8,25 +8,14 @@ export default function useFeedKeyboardNav({
   selectedSourceFeed,
   setShowModal,
   setTempArticleIndex,
-  setSelectedArticle,
   setSelectedSource,
+  setSelectedArticleIndex,
+  setSelectedArticleContent,
 }) {
-  const setSelectedArticleIndex = (index) => {
-    setSelectedArticle((prevState) => ({
-      ...prevState,
-      index: index,
-    }));
-  };
 
-  const setSelectedArticleContent = (content) => {
-    setSelectedArticle((prevState) => ({
-      ...prevState,
-      content: content,
-    }));
-  };
+  const itemRef = useRef(null);
 
-  const itemRefs = useRef(initialRefs);
-
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (selectedSourceURL !== null && showModal === false) {
@@ -40,7 +29,6 @@ export default function useFeedKeyboardNav({
           }));
           setTempArticleIndex(0);
         }
-
         if (e.key === "ArrowUp") {
           e.preventDefault();
           setTempArticleIndex((prevIndex) => {
@@ -79,39 +67,12 @@ export default function useFeedKeyboardNav({
     };
   }, [tempArticleIndex, selectedSourceURL, showModal]);
 
-  //center selected source
-  // useEffect(() => {
-  //   const item = itemRefs.current[sourceCategoryIndex].get(sourceIndex);
-  //   if (item) {
-  //     const sourceContainer = item.parentElement;
-  //     const itemTop = item.getBoundingClientRect().top;
-  //     const sourceContainerTop = sourceContainer?.getBoundingClientRect().top;
+  // Scroll to the selected item
+  useEffect(() => {
+    if (itemRef.current) {
+      itemRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [tempArticleIndex]);
 
-  //     if (
-  //       itemTop < sourceContainerTop ||
-  //       itemTop > sourceContainerTop + sourceContainer?.offsetHeight
-  //     ) {
-  //       sourceContainer.scrollTop = item.offsetTop - sourceContainer.offsetTop;
-  //     }
-  //   }
-  // }, [sourceIndex, sourceCategoryIndex, itemRefs]);
-
-  //center selected source category
-  // useEffect(() => {
-  //   const item = itemRefs.current[sourceCategoryIndex].get(sourceIndex);
-  //   if (item) {
-  //     const scrollbar = document.querySelector(".scrollbar");
-  //     const itemTop = item.getBoundingClientRect().top;
-  //     const scrollbarTop = scrollbar?.getBoundingClientRect().top;
-
-  //     if (
-  //       itemTop < scrollbarTop ||
-  //       itemTop > scrollbarTop + scrollbar?.offsetHeight
-  //     ) {
-  //       scrollbar.scrollTop = item.offsetTop - scrollbar.offsetTop;
-  //     }
-  //   }
-  // }, [sourceIndex, sourceCategoryIndex, itemRefs]);
-
-  return itemRefs;
+  return itemRef;
 }

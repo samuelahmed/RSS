@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createRef, useRef } from "react";
 import { formatDate } from "../utils";
 import useFeedKeyboardNav from "@/hooks/useFeedKeyboardNav";
 
@@ -11,20 +11,9 @@ export default function Feed({
   setSelectedArticle,
   selectedSourceURL,
 }) {
+  
   let counter = 1;
   const [tempArticleIndex, setTempArticleIndex] = useState(0);
-
-  const itemRefs = useFeedKeyboardNav({
-    initialRefs: selectedSourceFeed.map(() => new Map()),
-    showModal,
-    selectedSourceURL,
-    tempArticleIndex,
-    selectedSourceFeed,
-    setShowModal,
-    setTempArticleIndex,
-    setSelectedArticle,
-    setSelectedSource,
-  });
 
   const setSelectedSourceFeed = (feed) => {
     setSelectedSource((prevState) => ({
@@ -46,6 +35,20 @@ export default function Feed({
       content: content,
     }));
   };
+
+  const itemRef = useFeedKeyboardNav({
+    initialRefs: selectedSourceFeed.map(() => createRef()),
+    showModal,
+    selectedSourceURL,
+    tempArticleIndex,
+    selectedSourceFeed,
+    setShowModal,
+    setTempArticleIndex,
+    setSelectedArticle,
+    setSelectedSource,
+    setSelectedArticleIndex,
+    setSelectedArticleContent,
+  });
 
   useEffect(() => {
     const serverDataItemType = {
@@ -69,11 +72,7 @@ export default function Feed({
         {selectedSourceFeed.map((item, index) => (
           <div
             key={index}
-            // ref={(el) => {
-            //   if (el) {
-            //     itemRefs.current[index].set(index, el);
-            //   }
-            // }}
+            ref={index === tempArticleIndex ? itemRef : null}
             className={
               tempArticleIndex === index ? "bg-blue-600" : "bg-background"
             }
