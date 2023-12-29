@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sources from "./Sources";
 import Header from "./Header";
 import Footer from "./Footer";
 import Feed from "./Feed";
 import ArticleModal from "./ArticleModal";
 import useFetchFeed from "@/hooks/useFetchFeed";
+import useKeyboardNavActive from "@/hooks/useKeyboardNavActive";
 
 export default function AppContainer() {
+  
   const [fetchedFeed, setFetchedFeed] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedSource, setSelectedSource] = useState({
@@ -22,11 +24,16 @@ export default function AppContainer() {
   });
 
   useFetchFeed({ selectedSource, setFetchedFeed });
+  const keyboardNavActive = useKeyboardNavActive();
 
   return (
     <div>
       <Header selectedSourceName={selectedSource.name} />
-      <main className="pt-6 flex flex-row ">
+      <main
+        className={`pt-6 flex flex-row ${
+          keyboardNavActive ? "keyboard-nav" : ""
+        }`}
+      >
         <div className="w-1/3 md:w-1/5">
           <Sources
             selectedSourceURL={selectedSource.url}

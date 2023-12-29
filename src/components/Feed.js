@@ -14,6 +14,19 @@ export default function Feed({
   
   let counter = 1;
   const [tempArticleIndex, setTempArticleIndex] = useState(0);
+  const [keyboardNavUsed, setKeyboardNavUsed] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        setKeyboardNavUsed(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const setSelectedSourceFeed = (feed) => {
     setSelectedSource((prevState) => ({
@@ -74,7 +87,7 @@ export default function Feed({
             key={index}
             ref={index === tempArticleIndex ? itemRef : null}
             className={
-              tempArticleIndex === index ? "bg-blue-600" : "bg-background"
+              (tempArticleIndex === index && keyboardNavUsed === true)  ? "bg-blue-600" : "bg-background hover:bg-blue-600 cursor-pointer"
             }
             onClick={() => {
               setTempArticleIndex(index);
@@ -83,7 +96,7 @@ export default function Feed({
               setShowModal(true);
             }}
           >
-            <div className="flex flex-row overflow-hidden h-6 cursor-pointer hover:bg-blue-600">
+            <div className="flex flex-row overflow-hidden h-6">
               <div className="pr-2 w-8"> {counter++}.</div>
               <div className="pr-4 w-52 min-w-fit overflow-hidden hidden md:block">
                 {formatDate(item)}

@@ -11,3 +11,12 @@ body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background));
 }
+
+.keyboard-nav * {
+  cursor: none !important;
+  pointer-events: none !important;
+}
+.keyboard-nav,
+.keyboard-nav * {
+  cursor: none !important;
+}
