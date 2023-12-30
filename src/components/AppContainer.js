@@ -26,7 +26,7 @@ export default function AppContainer() {
   const keyboardNavActive = useKeyboardNavActive();
 
   return (
-    <div className="scrollbar">
+    <div className="h-screen overscroll-none overflow-hidden">
       <Header
         selectedSourceFeedLength={selectedSource.feed.length}
         selectedSourceName={selectedSource.name}
