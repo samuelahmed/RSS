@@ -11,7 +11,6 @@ export default function Feed({
   setSelectedArticle,
   selectedSourceURL,
 }) {
-  
   let counter = 1;
   const [tempArticleIndex, setTempArticleIndex] = useState(0);
   const [keyboardNavUsed, setKeyboardNavUsed] = useState(false);
@@ -63,6 +62,7 @@ export default function Feed({
     setSelectedArticleContent,
   });
 
+  console.log(fetchedFeed);
   useEffect(() => {
     const serverDataItemType = {
       atom: fetchedFeed?.feed?.entry,
@@ -87,7 +87,9 @@ export default function Feed({
             key={index}
             ref={index === tempArticleIndex ? itemRef : null}
             className={
-              (tempArticleIndex === index && keyboardNavUsed === true)  ? "bg-blue-600" : "bg-background hover:bg-blue-600 cursor-pointer"
+              tempArticleIndex === index && keyboardNavUsed === true
+                ? "bg-blue-600"
+                : "bg-background hover:bg-blue-600 cursor-pointer"
             }
             onClick={() => {
               setTempArticleIndex(index);
@@ -101,7 +103,9 @@ export default function Feed({
               <div className="pr-4 w-52 min-w-fit overflow-hidden hidden md:block">
                 {formatDate(item)}
               </div>
-              <div className="overflow-auto scrollbar">{item.title}</div>
+              <div className="overflow-auto scrollbar">
+                {typeof item.title === "string" ? item.title : item.title?._}{" "}
+              </div>
             </div>
           </div>
         ))}
