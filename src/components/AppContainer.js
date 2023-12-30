@@ -10,7 +10,6 @@ import useFetchFeed from "@/hooks/useFetchFeed";
 import useKeyboardNavActive from "@/hooks/useKeyboardNavActive";
 
 export default function AppContainer() {
-  
   const [fetchedFeed, setFetchedFeed] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedSource, setSelectedSource] = useState({
@@ -28,7 +27,10 @@ export default function AppContainer() {
 
   return (
     <div>
-      <Header selectedSourceName={selectedSource.name} />
+      <Header
+        selectedSourceFeedLength={selectedSource.feed.length}
+        selectedSourceName={selectedSource.name}
+      />
       <main
         className={`pt-6 flex flex-row ${
           keyboardNavActive ? "keyboard-nav" : ""
