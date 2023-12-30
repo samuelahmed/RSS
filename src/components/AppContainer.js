@@ -32,7 +32,7 @@ export default function AppContainer() {
         selectedSourceName={selectedSource.name}
       />
       <main
-        className={`pt-6 flex flex-row ${
+        className={`pt-6 flex flex-row scrollbar ${
           keyboardNavActive ? "keyboard-nav" : ""
         }`}
       >
