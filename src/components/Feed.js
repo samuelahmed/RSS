@@ -11,21 +11,9 @@ export default function Feed({
   setSelectedArticle,
   selectedSourceURL,
 }) {
+  
   let counter = 1;
   const [tempArticleIndex, setTempArticleIndex] = useState(0);
-  const [keyboardNavUsed, setKeyboardNavUsed] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        setKeyboardNavUsed(true);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   const setSelectedSourceFeed = (feed) => {
     setSelectedSource((prevState) => ({
@@ -87,7 +75,7 @@ export default function Feed({
             key={index}
             ref={index === tempArticleIndex ? itemRef : null}
             className={
-              tempArticleIndex === index && keyboardNavUsed === true
+              tempArticleIndex === index
                 ? "bg-blue-600"
                 : "bg-background hover:bg-blue-600 cursor-pointer"
             }
