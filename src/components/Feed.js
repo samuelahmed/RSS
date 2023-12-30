@@ -64,6 +64,7 @@ export default function Feed({
     } else if (serverDataItemType.rdf && serverDataItemType.rdf.length > 0) {
       setSelectedSourceFeed(serverDataItemType.rdf);
     }
+    setTempArticleIndex(0);
     setSelectedArticleIndex(null);
   }, [fetchedFeed]);
 
