@@ -26,13 +26,13 @@ export default function AppContainer() {
   const keyboardNavActive = useKeyboardNavActive();
 
   return (
-    <div>
+    <div className="scrollbar">
       <Header
         selectedSourceFeedLength={selectedSource.feed.length}
         selectedSourceName={selectedSource.name}
       />
       <main
-        className={`pt-6 flex flex-row scrollbar ${
+        className={`pt-6 flex flex-row ${
           keyboardNavActive ? "keyboard-nav" : ""
         }`}
       >
