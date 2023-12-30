@@ -36,7 +36,7 @@ export default function Sources({ setSelectedSource, selectedSourceURL }) {
         Feed Sources
       </div>
       <div
-        className="scrollbar fixed top-12 overflow-y-auto w-1/3 md:w-1/5 border-r-2 border-r-foreground"
+        className="scrollbar fixed top-12 overflow-y-auto scrollbar w-1/3 md:w-1/5 border-r-2 border-r-foreground"
         style={{ height: "92vh" }}
       >
         {sourceData.map((category, categoryIndex) => (
@@ -47,7 +47,7 @@ export default function Sources({ setSelectedSource, selectedSourceURL }) {
             >
               {sources[categoryIndex].title}
             </p>
-            <ul className="h-40 pl-1 overflow-auto">
+            <ul className="h-40 pl-1 overflow-auto scrollbar">
               {category.map((item, itemIndex) => (
                 <div
                   ref={(el) => {

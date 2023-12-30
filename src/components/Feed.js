@@ -101,7 +101,7 @@ export default function Feed({
               <div className="pr-4 w-52 min-w-fit overflow-hidden hidden md:block">
                 {formatDate(item)}
               </div>
-              <div className="overflow-auto ">{item.title}</div>
+              <div className="overflow-auto scrollbar">{item.title}</div>
             </div>
           </div>
         ))}
